@@ -1,5 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter&display=swap");
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth !important;
+}
+body::-webkit-scrollbar {
+    display: none;
+}
+body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
