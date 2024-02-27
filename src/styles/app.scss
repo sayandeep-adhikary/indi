@@ -14,3 +14,64 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+svg#play {
+    width: 75px;
+    display: block;
+    cursor: pointer;
+    transform-origin: 50% 50%;
+}
+
+svg#play #triangle {
+    fill: rgba(22, 22, 22, 0);
+    transition: 500ms;
+    transform-origin: 50% 50%;
+}
+.videoThumbnail:hover + svg#play #triangle, svg#play:hover #triangle {
+    fill: #ff4e4e;
+    transform-origin: 50% 50%;
+}
+
+svg #lineOne,
+svg #lineTwo {
+    transform-origin: 50% 50%;
+    transition: 1s;
+}
+
+.videoThumbnail:hover + svg #lineOne, svg:hover #lineOne {
+    transform: rotate(260deg);
+    -webkit-transform: rotate(260deg);
+    -moz-transform: rotate(260deg);
+    -o-transform: rotate(260deg);
+    transform-origin: 50% 50%;
+}
+
+.videoThumbnail:hover + svg #lineTwo, svg:hover #lineTwo {
+    transform: rotate(-450deg);
+    transform-origin: 50% 50%;
+}
+
+.videoThumbnail:has( + svg:hover) {
+    filter: brightness(0.5);
+}
+
+header {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.backgrounds-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -5;
+}
+
+.background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}

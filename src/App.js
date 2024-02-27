@@ -1,5 +1,6 @@
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
+import Search from './pages/Search';
 import Home from './pages/Home';
 import MovieDetails from './pages/MovieDetails';
 import './styles/app.scss'
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home/>} />
         <Route path="/movie/:id" element={<MovieDetails/>} />
+        <Route path="/search/movies" element={<Search/>} />
       </Routes>
       <Footer/>
     </Router>

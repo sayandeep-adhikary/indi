@@ -14,14 +14,14 @@ import footerImg from "../assets/footerImg.png";
 export default function Footer() {
   return (
     <Box
-      bgColor={"black"}
+      bgColor={["#232323", "black"]}
       px={[10, 20]}
-      py={[5, 30]}
+      py={['3rem', 30]}
       bgImage={footerImg}
       bgRepeat={"no-repeat"}
       bgPos={"right"}
     >
-      <VStack alignItems={"flex-start"} textAlign={"left"} gap={5}>
+      <VStack alignItems={"flex-start"} textAlign={"left"} gap={1}>
         <Heading
           color={"white"}
           fontSize={["2.5rem", "4rem"]}

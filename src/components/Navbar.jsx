@@ -18,19 +18,20 @@ import logo from "../assets/indi-logo.svg";
 import { CgMenuMotion } from "react-icons/cg";
 import { BsSearch } from "react-icons/bs";
 import { MdLocalMovies } from "react-icons/md";
+import { BiCategory } from "react-icons/bi";
 import { FaRegStar, FaRegUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const menuItems = [
   {
     label: "Search",
-    link: "/",
+    link: "/search/movies",
     icon: <BsSearch size={20} />,
   },
   {
-    label: "Top Movies",
-    link: "/movies",
-    icon: <MdLocalMovies size={20} />,
+    label: "Explore Movies",
+    link: "/explore",
+    icon: <BiCategory size={20} />,
   },
   {
     label: "Your Favorites",
@@ -65,6 +66,7 @@ export default function Navbar() {
           icon={<CgMenuMotion size={30} />}
           onClick={onOpen}
           color={"white"}
+          display={["none", "flex"]}
         />
       </HStack>
 
@@ -76,7 +78,7 @@ export default function Navbar() {
           borderLeft={"1px solid gray"}
         >
           <DrawerCloseButton color={"white"} />
-          <DrawerHeader>
+          <DrawerHeader mr={"auto"}>
             <Link to={"/"} onClick={onClose}>
               <Image src={logo} alt="logo" width={"3rem"} />
             </Link>
@@ -88,29 +90,56 @@ export default function Navbar() {
             justifyContent={["flex-start"]}
           >
             {menuItems.map((item) => (
-              <Button
-                leftIcon={item.icon}
-                variant="solid"
-                w={"full"}
-                my={2}
-                px={[20, 10]}
-                justifyContent={["center", "space-between"]}
-                gap={[0, 4]}
-                key={item.label}
-                color={"white"}
-                bgColor={"gray.800"}
-                // border={'1px solid gray'}
-                _hover={{ bgColor: "gray.700" }}
-                py={[10, 3]}
-              >
-                <Container textAlign={"left"}>
-                  <Text>{item.label}</Text>
-                </Container>
-              </Button>
+              <Link to={item.link} key={item.label} style={{ width: "100%" }}>
+                <Button
+                  leftIcon={item.icon}
+                  variant="solid"
+                  w={"full"}
+                  my={2}
+                  px={[20, 10]}
+                  justifyContent={["center", "space-between"]}
+                  gap={[0, 4]}
+                  color={"white"}
+                  bgColor={"gray.800"}
+                  // border={'1px solid gray'}
+                  _hover={{ bgColor: "gray.700" }}
+                  py={[10, 3]}
+                  onClick={() => {
+                    onClose();
+                  }}
+                >
+                  <Container textAlign={"left"}>
+                    <Text>{item.label}</Text>
+                  </Container>
+                </Button>
+              </Link>
             ))}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
+      <HStack
+        bg={"#101010"}
+        justifyContent={"space-between"}
+        p={3}
+        px={5}
+        pos={"fixed"}
+        bottom={0}
+        w={"full"}
+        zIndex={10000}
+        display={["flex", "none"]}
+      >
+        {menuItems.map((item) => (
+          <Link to={item.link} key={item.label}>
+            <IconButton
+              icon={item.icon}
+              color={"white"}
+              bgColor={"#101010"}
+              _active={{ bgColor: "#101010" }}
+              _hover={{ bgColor: "#101010" }}
+            />
+          </Link>
+        ))}
+      </HStack>
     </>
   );
 }
