@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { FaPlay } from "react-icons/fa";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import OfficialVideos from "../components/OfficialVideos";
 // import Details from "../components/Details";
 import TopCast from "../components/TopCast";
@@ -28,6 +28,7 @@ import MovieList from "../components/MovieList";
 import noBackdrop from "../assets/abstract.jpg";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { useFirebase } from "../context/Firebase";
 
 export default function MovieDetails() {
   const API_KEY = process.env.REACT_APP_API_KEY;
@@ -37,8 +38,14 @@ export default function MovieDetails() {
   const [trailer, setTrailer] = useState({
     results: [{ key: "" }],
   });
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isLoggedIn = useFirebase().isLoggedIn;
   const { id } = useParams();
   useEffect(() => {
+    if (!isLoggedIn){
+      navigate("/login", { state: { prevUrl: location.pathname } });
+    }
     window.scrollTo(0, 0);
     const fetchData = async () => {
       try {
@@ -52,7 +59,7 @@ export default function MovieDetails() {
           `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${API_KEY}`
         );
         setMovieDetails(movieDetail.data);
-        console.log(movieDetails);
+        // console.log(movieDetails);
         setMovieImages(movieImages.data);
         setTrailer(trailers.data);
         // console.log(movieDetails);
@@ -62,12 +69,16 @@ export default function MovieDetails() {
       }
     };
     fetchData();
-  }, [id, API_KEY]);
+  }, [id, API_KEY, isLoggedIn, navigate]);
 
   return (
     <>
       <Skeleton isLoaded={movieDetailsLoaded}>
-        <BannerComponent movieDetails={movieDetails} trailer={trailer} movieImages={movieImages} />
+        <BannerComponent
+          movieDetails={movieDetails}
+          trailer={trailer}
+          movieImages={movieImages}
+        />
         {/* {movieImages.backdrops?.slice(0, 5).map((image, index) => {})} */}
       </Skeleton>
       <OfficialVideos />

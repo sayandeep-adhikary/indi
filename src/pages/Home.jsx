@@ -9,7 +9,7 @@ export default function Home() {
       <CarouselComponent />
       <MovieList
         title="Popular Right Now"
-        url={`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`}
+        url={`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}`}
       />
       <MovieList
         title="Trending This Week"

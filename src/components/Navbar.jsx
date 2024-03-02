@@ -17,10 +17,12 @@ import React from "react";
 import logo from "../assets/indi-logo.svg";
 import { CgMenuMotion } from "react-icons/cg";
 import { BsSearch } from "react-icons/bs";
-import { MdLocalMovies } from "react-icons/md";
 import { BiCategory } from "react-icons/bi";
 import { FaRegStar, FaRegUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { TiHomeOutline } from "react-icons/ti";
+import { MdLogout } from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
+import { useFirebase } from "../context/Firebase";
 
 const menuItems = [
   {
@@ -47,6 +49,9 @@ const menuItems = [
 
 export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const isLoggedIn = useFirebase().isLoggedIn;
+  const signOutUser = useFirebase().signOutUser;
+  const navigate = useNavigate();
   return (
     <>
       <HStack
@@ -60,14 +65,30 @@ export default function Navbar() {
         <Link to={"/"}>
           <Image src={logo} alt="logo" width={"3rem"} />
         </Link>
-        <IconButton
-          isRound={true}
-          variant="transparent"
-          icon={<CgMenuMotion size={30} />}
-          onClick={onOpen}
-          color={"white"}
-          display={["none", "flex"]}
-        />
+        <HStack gap={5}>
+          {!isLoggedIn ? (
+            <Link to={"/login"}>
+              <Button colorScheme="red">Get Started</Button>
+            </Link>
+          ) : (
+            <IconButton
+              isRound={true}
+              variant="transparent"
+              icon={<MdLogout size={30} />}
+              onClick={signOutUser}
+              color={"white"}
+              display={["flex", "none"]}
+            />
+          )}
+          <IconButton
+            isRound={true}
+            variant="transparent"
+            icon={<CgMenuMotion size={30} />}
+            onClick={onOpen}
+            color={"white"}
+            display={["none", "flex"]}
+          />
+        </HStack>
       </HStack>
 
       <Drawer onClose={onClose} isOpen={isOpen} size={["full", "xs"]}>
@@ -114,6 +135,27 @@ export default function Navbar() {
                 </Button>
               </Link>
             ))}
+            {isLoggedIn && (
+              <Button
+                leftIcon={<MdLogout size={20} />}
+                w={"full"}
+                my={2}
+                px={[20, 10]}
+                justifyContent={["center", "space-between"]}
+                gap={[0, 4]}
+                py={[10, 3]}
+                colorScheme="red"
+                onClick={() => {
+                  onClose();
+                  signOutUser();
+                  navigate("/");
+                }}
+              >
+                <Container textAlign={"left"}>
+                  <Text>Log Out</Text>
+                </Container>
+              </Button>
+            )}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
@@ -128,6 +170,15 @@ export default function Navbar() {
         zIndex={10000}
         display={["flex", "none"]}
       >
+        <Link to={"/"}>
+          <IconButton
+            icon={<TiHomeOutline size={20} />}
+            color={"white"}
+            bgColor={"#101010"}
+            _active={{ bgColor: "#101010" }}
+            _hover={{ bgColor: "#101010" }}
+          />
+        </Link>
         {menuItems.map((item) => (
           <Link to={item.link} key={item.label}>
             <IconButton

@@ -2,6 +2,8 @@ import {
   Badge,
   Box,
   Card,
+  Flex,
+  HStack,
   Heading,
   Image,
   Select,
@@ -18,7 +20,7 @@ import { Link } from "react-router-dom";
 import noPoster from "../assets/noPoster.jpg";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import noResults from "../assets/noData.png";
+// import noResults from "../assets/noData.png";
 
 const genres = [
   { id: 28, name: "Action" },
@@ -46,7 +48,7 @@ export default function MovieList({ title = "Movies", url = "", query = "" }) {
   // console.log("title = " + title + " url = " + url);
   const [movies, setMovies] = useState([]);
   const [loaded, setLoaded] = useState(false);
-  const [sortBy, setSortBy] = useState("");
+  const [sortBy, setSortBy] = useState("popularity.desc");
   // alert(sortBy)
 
   useEffect(() => {
@@ -70,7 +72,7 @@ export default function MovieList({ title = "Movies", url = "", query = "" }) {
   }, [url, sortBy]);
 
   return (
-    <Box p={[4, 8]} py={10} bgColor={"#232323"}>
+    <Box p={[4, 8]} py={10} bg={"linear-gradient(to right, #141e30, #243b55)"}>
       <Stack flexDirection={["column", "row"]} justifyContent={"space-between"}>
         <Heading color={"white"} fontFamily={"'Inter', sans-serif"}>
           {title}
@@ -85,28 +87,40 @@ export default function MovieList({ title = "Movies", url = "", query = "" }) {
             // alert("Sorting by " + e.currentTarget.value);
           }}
           minW={"8rem"}
-          defaultValue={"popularity.asc"}
+          defaultValue={"popularity.desc"}
         >
-          <option value={"popularity.asc"} style={{ color: "black" }}>
+          <option value={"popularity.desc"} style={{ color: "black" }}>
             Popularity
           </option>
-          <option value={"vote_average.asc"} style={{ color: "black" }}>
+          <option value={"vote_average.desc"} style={{ color: "black" }}>
             Rating
           </option>
-          <option value={"release_date.asc"} style={{ color: "black" }}>
+          <option value={"release_date.desc"} style={{ color: "black" }}>
             Release Date
           </option>
         </Select>
       </Stack>
       {query ? (
         movies && movies.length === 0 ? (
-          <Image
-            w={["100%", "30%"]}
-            src={noResults}
-            alt="no data found"
-            mx={"auto"}
-            my={5}
-          />
+          // <Image
+          //   w={["100%", "30%"]}
+          //   src={noResults}
+          //   alt="no data found"
+          //   mx={"auto"}
+          //   my={5}
+          // />
+          <Flex justifyContent={'center'} pt={10}>
+            <lottie-player
+              src="https://lottie.host/6ec64c36-a850-45d7-a82b-7f3ed5b97941/Pe03OJeJ13.json"
+              background="#141e30, #243b55"
+              speed="1"
+              style={{ width: "300px", height: "300px" }}
+              loop
+              autoplay
+              direction="1"
+              mode="normal"
+            ></lottie-player>
+          </Flex>
         ) : (
           ""
         )
