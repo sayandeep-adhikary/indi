@@ -47,7 +47,8 @@ export default function CarouselComponent() {
   }, [API_KEY]);
 
   return (
-    <Carousel
+    
+    popularMovies.length > 0 && <Carousel
       autoPlay={true}
       infiniteLoop
       interval={5000}
@@ -150,61 +151,6 @@ export default function CarouselComponent() {
               zIndex={[3]}
               opacity={1}
             />
-            {/* <VStack
-            bgColor={"black"}
-            display={["flex", "none"]}
-            top={["5rem", "6rem"]}
-            left={["1rem", "2.5rem"]}
-            zIndex={10}
-            alignItems={"flex-start"}
-            textAlign={"left"}
-            gap={8}
-            p={8}
-            minH={'45rem'}
-            justifyContent={'center'}
-          >
-            <Heading
-              color={"white"}
-              fontSize={["3rem", "6rem"]}
-              fontFamily={"'Bebas Neue', sans-serif"}
-              letterSpacing={"2px"}
-              textTransform={"uppercase"}
-              fontWeight={900}
-            >
-              {item.title}
-            </Heading>
-            <Text
-              color={"gray.400"}
-              fontSize={["1rem"]}
-              fontFamily={"'Inter', sans-serif"}
-              letterSpacing={"1px"}
-              pr={"3rem"}
-              lineHeight={"180%"}
-              fontWeight={900}
-            >
-              {item.genres.join(", ")} | {item.releaseDate} | {item.runtime}{" Min."}
-            </Text>
-            <Text
-              color={"white"}
-              fontSize={["1rem"]}
-              fontFamily={"'Inter', sans-serif"}
-              letterSpacing={"1px"}
-              lineHeight={"180%"}
-            >
-              {item.description}
-            </Text>
-            <Button
-              leftIcon={<FaPlay />}
-              color={"#FF4E4E"}
-              variant={"outline"}
-              border={"1px solid #FF4E4E"}
-              p={6}
-              borderRadius={"full"}
-              _hover={{ bg: "#FF4E4E", color: "white" }}
-            >
-              Watch Now
-            </Button>
-          </VStack> */}
           </Box>
         ))}
     </Carousel>

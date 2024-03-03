@@ -13,14 +13,13 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import logo from "../assets/indi-logo.svg";
 import { CgMenuMotion } from "react-icons/cg";
-import { BsSearch } from "react-icons/bs";
-import { BiCategory } from "react-icons/bi";
-import { FaRegStar, FaRegUser } from "react-icons/fa";
-import { TiHomeOutline } from "react-icons/ti";
-import { MdLogout } from "react-icons/md";
+import { TiHomeOutline, TiHome } from "react-icons/ti";
+import { IoSearchOutline, IoSearch } from "react-icons/io5";
+import { PiStar, PiStarFill, PiUserCircle } from "react-icons/pi";
+import { MdLogout, MdOutlineExplore, MdExplore } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { useFirebase } from "../context/Firebase";
 
@@ -28,22 +27,22 @@ const menuItems = [
   {
     label: "Search",
     link: "/search/movies",
-    icon: <BsSearch size={20} />,
+    icon: <IoSearchOutline size={22} />,
   },
   {
     label: "Explore Movies",
     link: "/explore",
-    icon: <BiCategory size={20} />,
+    icon: <MdOutlineExplore size={22} />,
   },
   {
     label: "Your Favorites",
     link: "/favorites",
-    icon: <FaRegStar size={20} />,
+    icon: <PiStar size={21} />,
   },
   {
     label: "Profile",
     link: "/profile",
-    icon: <FaRegUser size={20} />,
+    icon: <PiUserCircle size={24} />,
   },
 ];
 
@@ -52,6 +51,37 @@ export default function Navbar() {
   const isLoggedIn = useFirebase().isLoggedIn;
   const signOutUser = useFirebase().signOutUser;
   const navigate = useNavigate();
+
+  const [isHomeFilled, setIsHomeFilled] = useState(true);
+  const [isSearchFilled, setIsSearchFilled] = useState(false);
+  const [isExploreFilled, setIsExploreFilled] = useState(false);
+  const [isFavoritesFilled, setIsFavoritesFilled] = useState(false);
+
+  const handleHomeClick = () => {
+    setIsHomeFilled(true);
+    setIsSearchFilled(false);
+    setIsExploreFilled(false);
+    setIsFavoritesFilled(false);
+  }
+  const handleSearchClick = () => {
+    setIsHomeFilled(false);
+    setIsSearchFilled(true);
+    setIsExploreFilled(false);
+    setIsFavoritesFilled(false);
+  }
+  const handleExploreClick = () => {
+    setIsHomeFilled(false);
+    setIsSearchFilled(false);
+    setIsExploreFilled(true);
+    setIsFavoritesFilled(false);
+  }
+  const handleFavoritesClick = () => {
+    setIsHomeFilled(false);
+    setIsSearchFilled(false);
+    setIsExploreFilled(false);
+    setIsFavoritesFilled(true);
+  }
+
   return (
     <>
       <HStack
@@ -75,7 +105,10 @@ export default function Navbar() {
               isRound={true}
               variant="transparent"
               icon={<MdLogout size={30} />}
-              onClick={signOutUser}
+              onClick={() => {
+                signOutUser();
+                navigate("/");
+              }}
               color={"white"}
               display={["flex", "none"]}
             />
@@ -172,24 +205,53 @@ export default function Navbar() {
       >
         <Link to={"/"}>
           <IconButton
-            icon={<TiHomeOutline size={20} />}
+            icon={isHomeFilled ? <TiHome size={22}/> : <TiHomeOutline size={20} />}
+            color={"white"}
+            bgColor={"#101010"}
+            _active={{ bgColor: "#101010" }}
+            _hover={{ bgColor: "#101010" }}
+            onClick={handleHomeClick}
+          />
+        </Link>
+        <Link to={"/search/movies"}>
+          <IconButton
+            icon={isSearchFilled ? <IoSearch size={24}/>: <IoSearchOutline size={22} />}
+            color={"white"}
+            bgColor={"#101010"}
+            _active={{ bgColor: "#101010" }}
+            _hover={{ bgColor: "#101010" }}
+            onClick={handleSearchClick}
+          />
+        </Link>
+        <Link to={"/explore"}>
+          <IconButton
+            icon={isExploreFilled ? <MdExplore size={24} /> : <MdOutlineExplore size={22} />}
+            color={"white"}
+            bgColor={"#101010"}
+            _active={{ bgColor: "#101010" }}
+            _hover={{ bgColor: "#101010" }}
+            onClick={handleExploreClick}
+          />
+        </Link>
+        <Link to={"/favorites"}>
+          <IconButton
+            icon={isFavoritesFilled ? <PiStarFill size={21} /> : <PiStar size={21} />}
+            color={"white"}
+            bgColor={"#101010"}
+            _active={{ bgColor: "#101010" }}
+            _hover={{ bgColor: "#101010" }}
+            onClick={handleFavoritesClick}
+          />
+        </Link>
+        <Link to={"/profile"}>
+          <IconButton
+            icon={<PiUserCircle size={24} />}
             color={"white"}
             bgColor={"#101010"}
             _active={{ bgColor: "#101010" }}
             _hover={{ bgColor: "#101010" }}
           />
         </Link>
-        {menuItems.map((item) => (
-          <Link to={item.link} key={item.label}>
-            <IconButton
-              icon={item.icon}
-              color={"white"}
-              bgColor={"#101010"}
-              _active={{ bgColor: "#101010" }}
-              _hover={{ bgColor: "#101010" }}
-            />
-          </Link>
-        ))}
       </HStack>
     </>
   );

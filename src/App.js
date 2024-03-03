@@ -8,7 +8,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  useLocation,
+  // useLocation,
 } from "react-router-dom";
 import ExploreMovies from "./pages/ExploreMovies";
 import Login from "./pages/Login";

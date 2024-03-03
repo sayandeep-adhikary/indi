@@ -43,6 +43,7 @@ export default function MovieDetails() {
   const isLoggedIn = useFirebase().isLoggedIn;
   const { id } = useParams();
   useEffect(() => {
+    document.title = "INDI - Movie Details";
     if (!isLoggedIn){
       navigate("/login", { state: { prevUrl: location.pathname } });
     }
@@ -69,7 +70,7 @@ export default function MovieDetails() {
       }
     };
     fetchData();
-  }, [id, API_KEY, isLoggedIn, navigate]);
+  }, [id, API_KEY, isLoggedIn, navigate, location.pathname]);
 
   return (
     <>

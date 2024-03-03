@@ -5,6 +5,7 @@ import { Box, Heading, Text } from "@chakra-ui/react";
 export default function ExploreMovies() {
   const API_KEY = process.env.REACT_APP_API_KEY;
   useEffect(() => {
+    document.title = "INDI - Explore Movies";
     window.scrollTo(0, 0);
   }, []);
   return (

@@ -69,7 +69,7 @@ export default function Login() {
     if(isLoggedIn){
       navigate(location.state?.prevUrl ? location.state.prevUrl : "/");
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, navigate, location.state?.prevUrl]);
 
   return (
     <Grid

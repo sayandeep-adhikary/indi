@@ -6,6 +6,8 @@ export default function Favorites() {
   const isLoggedIn = useFirebase().isLoggedIn;
   const navigate = useNavigate();
   useEffect(() => {
+    document.title = "INDI - Favorites";
+    window.scrollTo(0, 0);
     if (!isLoggedIn) {
       navigate("/login", { state: { prevUrl: "/favorites" } });
     }

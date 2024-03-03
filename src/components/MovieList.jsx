@@ -3,7 +3,6 @@ import {
   Box,
   Card,
   Flex,
-  HStack,
   Heading,
   Image,
   Select,
@@ -44,7 +43,12 @@ const genres = [
   { id: 37, name: "Western" },
 ];
 
-export default function MovieList({ title = "Movies", url = "", query = "" }) {
+export default function MovieList({
+  title = "Movies",
+  url = "",
+  query = "",
+  showSortBy = true,
+}) {
   // console.log("title = " + title + " url = " + url);
   const [movies, setMovies] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -77,28 +81,30 @@ export default function MovieList({ title = "Movies", url = "", query = "" }) {
         <Heading color={"white"} fontFamily={"'Inter', sans-serif"}>
           {title}
         </Heading>
-        <Select
-          variant={"flushed"}
-          size={"md"}
-          color={"white"}
-          maxW={"fit-content"}
-          onChange={(e) => {
-            setSortBy(e.currentTarget.value);
-            // alert("Sorting by " + e.currentTarget.value);
-          }}
-          minW={"8rem"}
-          defaultValue={"popularity.desc"}
-        >
-          <option value={"popularity.desc"} style={{ color: "black" }}>
-            Popularity
-          </option>
-          <option value={"vote_average.desc"} style={{ color: "black" }}>
-            Rating
-          </option>
-          <option value={"release_date.desc"} style={{ color: "black" }}>
-            Release Date
-          </option>
-        </Select>
+        {showSortBy && (
+          <Select
+            variant={"flushed"}
+            size={"md"}
+            color={"white"}
+            maxW={"fit-content"}
+            onChange={(e) => {
+              setSortBy(e.currentTarget.value);
+              // alert("Sorting by " + e.currentTarget.value);
+            }}
+            minW={"8rem"}
+            defaultValue={"popularity.desc"}
+          >
+            <option value={"popularity.desc"} style={{ color: "black" }}>
+              Popularity
+            </option>
+            <option value={"vote_average.desc"} style={{ color: "black" }}>
+              Rating
+            </option>
+            <option value={"release_date.desc"} style={{ color: "black" }}>
+              Release Date
+            </option>
+          </Select>
+        )}
       </Stack>
       {query ? (
         movies && movies.length === 0 ? (
@@ -109,7 +115,7 @@ export default function MovieList({ title = "Movies", url = "", query = "" }) {
           //   mx={"auto"}
           //   my={5}
           // />
-          <Flex justifyContent={'center'} pt={10}>
+          <Flex justifyContent={"center"} pt={10}>
             <lottie-player
               src="https://lottie.host/6ec64c36-a850-45d7-a82b-7f3ed5b97941/Pe03OJeJ13.json"
               background="#141e30, #243b55"

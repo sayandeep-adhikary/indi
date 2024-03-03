@@ -7,6 +7,7 @@ export default function Search() {
   const [query, setQuery] = useState("");
   const API_KEY = process.env.REACT_APP_API_KEY;
   useEffect(() => {
+    document.title = "INDI - Search";
     window.scrollTo(0, 0);
   }, [])
   
@@ -51,6 +52,7 @@ export default function Search() {
           title={`Search results for "${query}"`}
           url={`https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${API_KEY}`}
           query={query}
+          showSortBy={false}
         /> : ''
       }
     </>
