@@ -11,6 +11,7 @@ import {
   FacebookAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import { getDatabase, ref, set, onValue } from "firebase/database";
 const firebaseConfig = {
   apiKey: "AIzaSyDxILbSWuofcF8cZroHpKhuVt4xTrKYtNw",
   authDomain: "indi-81cd4.firebaseapp.com",
@@ -26,6 +27,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
 const googleProvider = new GoogleAuthProvider();
 const faceboookProvider = new FacebookAuthProvider();
+export const db = getDatabase(firebaseApp);
 
 export const useFirebase = () => {
   return useContext(FirebaseContext);
@@ -34,8 +36,10 @@ export const useFirebase = () => {
 export const FirebaseProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [favorites, setFavorites] = useState([]);
   const createUserWithPassword = (email, password) => {
-    createUserWithEmailAndPassword(firebaseAuth, email, password).catch(
+    createUserWithEmailAndPassword(firebaseAuth, email, password)
+    .catch(
       (error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -53,12 +57,11 @@ export const FirebaseProvider = ({ children }) => {
   };
 
   const signInAnonymousUser = () => {
-    signInAnonymously(firebaseAuth)
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      });
+    signInAnonymously(firebaseAuth).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    });
   };
 
   const signupWithGoogle = () => {
@@ -82,6 +85,12 @@ export const FirebaseProvider = ({ children }) => {
     });
   };
 
+  const addToFavourites = (userId, movieId, movieData) => {
+    const dbRef = ref(db, `users/${userId}/favourites/${movieId}`);
+    set(dbRef, movieData);
+  };
+
+
   const value = {
     createUserWithPassword,
     signinWithEmailAndPassword,
@@ -90,8 +99,9 @@ export const FirebaseProvider = ({ children }) => {
     signInAnonymousUser,
     signupWithGoogle,
     signupWithFacebook,
+    user,
+    addToFavourites,
   };
-
   useEffect(() => {
     onAuthStateChanged(firebaseAuth, (user) => {
       if (user) {
@@ -102,7 +112,7 @@ export const FirebaseProvider = ({ children }) => {
         setIsLoggedIn(false);
       }
     });
-  }, []);
+  }, [user]);
 
   return (
     <FirebaseContext.Provider value={value}>
