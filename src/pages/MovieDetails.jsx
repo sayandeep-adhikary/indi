@@ -115,6 +115,7 @@ function BannerComponent({ movieDetails, trailer }) {
         genres: movieDetails.genres,
         release_date: movieDetails.release_date,
         vote_average: movieDetails.vote_average,
+        date: new Date().toISOString(),
       });
     }
   };
@@ -128,11 +129,13 @@ function BannerComponent({ movieDetails, trailer }) {
           if (arr.some((movie) => movie.id === movieDetails.id)) {
             setIsChecked(true);
           }
+          else setIsChecked(false);
         });
       }
     };
     getFavorites();
-  }, [movieDetails.id, user]);
+  }, [movieDetails, user]);
+
   return (
     movieDetails &&
     trailer && (

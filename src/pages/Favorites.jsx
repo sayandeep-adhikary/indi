@@ -27,7 +27,7 @@ export default function Favorites() {
         onValue(dbRef, (snapshot) => {
           const data = snapshot?.val() || {};
           const arr = Object?.values(data);
-          setFavourites(arr);
+          setFavourites(arr.sort((a, b) => b.date - a.date));
           setLoaded(true);
         });
       }
