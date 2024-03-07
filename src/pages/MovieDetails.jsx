@@ -100,10 +100,12 @@ function BannerComponent({ movieDetails, trailer }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isChecked, setIsChecked] = useState(false);
   const addToFavourites = useFirebase().addToFavourites;
+  const removeFromFavourites = useFirebase().removeFromFavourites;
   const user = useFirebase().user;
   const handleAddToFavouritesClick = () => {
     if (isChecked) {
       setIsChecked(false);
+      removeFromFavourites(user.uid, movieDetails.id);
     } else {
       setIsChecked(true);
       addToFavourites(user.uid, movieDetails.id, {

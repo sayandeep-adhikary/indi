@@ -125,8 +125,8 @@ export default function CarouselComponent() {
                 paddingRight={["1rem", "40rem"]}
                 lineHeight={"180%"}
               >
-                {item?.overview?.length > 300
-                  ? item.overview.slice(0, 300) + "..."
+                {item?.overview?.length > 200
+                  ? item.overview.slice(0, 200) + "..."
                   : item.overview}
               </Text>
               <Link to={`/movie/${item.id}`}>

@@ -11,7 +11,8 @@ import {
   FacebookAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { getDatabase, ref, set, onValue } from "firebase/database";
+import { getDatabase, ref, set, remove } from "firebase/database";
+import { useToast } from "@chakra-ui/react";
 const firebaseConfig = {
   apiKey: "AIzaSyDxILbSWuofcF8cZroHpKhuVt4xTrKYtNw",
   authDomain: "indi-81cd4.firebaseapp.com",
@@ -36,60 +37,203 @@ export const useFirebase = () => {
 export const FirebaseProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [favorites, setFavorites] = useState([]);
+  const toast = useToast();
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
   const createUserWithPassword = (email, password) => {
     createUserWithEmailAndPassword(firebaseAuth, email, password)
-    .catch(
-      (error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      }
-    );
+      .then(() => {
+        toast({
+          title: "Account Created Successfully.",
+          status: "success",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: capitalizeFirstLetter(
+            error.code.split("auth/")[1].split("-").join(" ")
+          ),
+          status: "error",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      });
   };
 
   const signinWithEmailAndPassword = (email, password) => {
-    signInWithEmailAndPassword(firebaseAuth, email, password).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
-    });
+    signInWithEmailAndPassword(firebaseAuth, email, password)
+      .then(() => {
+        toast({
+          title: "Signed In Successfully.",
+          status: "success",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: capitalizeFirstLetter(
+            error.code.split("auth/")[1].split("-").join(" ")
+          ),
+          status: "error",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      });
   };
 
   const signInAnonymousUser = () => {
-    signInAnonymously(firebaseAuth).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
-    });
+    signInAnonymously(firebaseAuth)
+      .then(() => {
+        toast({
+          title: "Signed In Successfully.",
+          status: "success",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: capitalizeFirstLetter(
+            error.code.split("auth/")[1].split("-").join(" ")
+          ),
+          status: "error",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      });
   };
 
   const signupWithGoogle = () => {
-    signInWithPopup(firebaseAuth, googleProvider).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
-    });
+    signInWithPopup(firebaseAuth, googleProvider)
+      .then(() => {
+        toast({
+          title: "Signed In Successfully.",
+          status: "success",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: capitalizeFirstLetter(
+            error.code.split("auth/")[1].split("-").join(" ")
+          ),
+          status: "error",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      });
   };
+
   const signupWithFacebook = () => {
-    signInWithPopup(firebaseAuth, faceboookProvider).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
-    });
+    signInWithPopup(firebaseAuth, faceboookProvider)
+      .then(() => {
+        toast({
+          title: "Signed In Successfully.",
+          status: "success",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: capitalizeFirstLetter(
+            error.code.split("auth/")[1].split("-").join(" ")
+          ),
+          status: "error",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      });
   };
 
   const signOutUser = () => {
-    signOut(firebaseAuth).catch((error) => {
-      console.log(error);
-    });
+    signOut(firebaseAuth).then(() => {
+        toast({
+          title: "Signed Out Successfully.",
+          status: "success",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: capitalizeFirstLetter(
+            error.code.split("auth/")[1].split("-").join(" ")
+          ),
+          status: "error",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      });
   };
 
   const addToFavourites = (userId, movieId, movieData) => {
     const dbRef = ref(db, `users/${userId}/favourites/${movieId}`);
-    set(dbRef, movieData);
+    set(dbRef, movieData)
+      .then(() => {
+        toast({
+          title: "Added to Favourites.",
+          status: "success",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: capitalizeFirstLetter(
+            error.code.split("auth/")[1].split("-").join(" ")
+          ),
+          status: "error",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      });
   };
 
+  const removeFromFavourites = (userId, movieId) => {
+    const dbRef = ref(db, `users/${userId}/favourites/${movieId}`);
+    remove(dbRef)
+      .then(() => {
+        toast({
+          title: "Removed from Favourites.",
+          status: "success",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: capitalizeFirstLetter(
+            error.code.split("auth/")[1].split("-").join(" ")
+          ),
+          status: "error",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      });
+  };
 
   const value = {
     createUserWithPassword,
@@ -101,6 +245,7 @@ export const FirebaseProvider = ({ children }) => {
     signupWithFacebook,
     user,
     addToFavourites,
+    removeFromFavourites,
   };
   useEffect(() => {
     onAuthStateChanged(firebaseAuth, (user) => {
