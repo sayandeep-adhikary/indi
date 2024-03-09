@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import noPoster from "../assets/noPoster.jpg";
-import { genres } from "../components/MovieList";
 
 export default function Favorites() {
   const [favourites, setFavourites] = useState([]);
@@ -27,7 +26,7 @@ export default function Favorites() {
         onValue(dbRef, (snapshot) => {
           const data = snapshot?.val() || {};
           const arr = Object?.values(data);
-          setFavourites(arr.sort((a, b) => b.date - a.date));
+          setFavourites(arr);
           setLoaded(true);
         });
       }

@@ -115,7 +115,6 @@ function BannerComponent({ movieDetails, trailer }) {
         genres: movieDetails.genres,
         release_date: movieDetails.release_date,
         vote_average: movieDetails.vote_average,
-        date: new Date().toISOString(),
       });
     }
   };

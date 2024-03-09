@@ -59,7 +59,7 @@ export default function Login() {
     if (isSignInClicked) {
       signinWithEmailAndPassword(email, password);
     } else {
-      createUserWithPassword(email, password);
+      createUserWithPassword(name, email, password);
     }
   };
 

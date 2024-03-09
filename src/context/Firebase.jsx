@@ -10,9 +10,12 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
   signInWithPopup,
+  updateProfile,
 } from "firebase/auth";
-import { getDatabase, ref, set, remove } from "firebase/database";
+import { getDatabase, ref, set, remove, update } from "firebase/database";
+import { getStorage } from "firebase/storage";
 import { useToast } from "@chakra-ui/react";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDxILbSWuofcF8cZroHpKhuVt4xTrKYtNw",
   authDomain: "indi-81cd4.firebaseapp.com",
@@ -21,6 +24,7 @@ const firebaseConfig = {
   messagingSenderId: "576050860088",
   appId: "1:576050860088:web:277b8e82c2a618052116cd",
   databaseURL: "https://indi-81cd4-default-rtdb.firebaseio.com",
+  storageBucket: "gs://indi-81cd4.appspot.com",
 };
 
 const FirebaseContext = createContext(null);
@@ -29,24 +33,27 @@ const firebaseAuth = getAuth(firebaseApp);
 const googleProvider = new GoogleAuthProvider();
 const faceboookProvider = new FacebookAuthProvider();
 export const db = getDatabase(firebaseApp);
+export const storage = getStorage(firebaseApp);
 
 export const useFirebase = () => {
   return useContext(FirebaseContext);
 };
 
+export function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 export const FirebaseProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [name, setName] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const toast = useToast();
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
 
-  const createUserWithPassword = (email, password) => {
+  const createUserWithPassword = (name, email, password) => {
+    setName(name);
     createUserWithEmailAndPassword(firebaseAuth, email, password)
       .then(() => {
         toast({
-          title: "Account Created Successfully.",
+          title: "User Created Successfully.",
           status: "success",
           variant: "subtle",
           position: "top",
@@ -163,7 +170,8 @@ export const FirebaseProvider = ({ children }) => {
   };
 
   const signOutUser = () => {
-    signOut(firebaseAuth).then(() => {
+    signOut(firebaseAuth)
+      .then(() => {
         toast({
           title: "Signed Out Successfully.",
           status: "success",
@@ -252,6 +260,10 @@ export const FirebaseProvider = ({ children }) => {
       if (user) {
         setUser(user);
         setIsLoggedIn(true);
+        update(ref(db, `users/${user.uid}`), {
+          email: user.email,
+          name: user.displayName || name,
+        });
       } else {
         setUser(null);
         setIsLoggedIn(false);
