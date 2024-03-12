@@ -8,7 +8,6 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  // useLocation,
 } from "react-router-dom";
 import ExploreMovies from "./pages/ExploreMovies";
 import Login from "./pages/Login";
@@ -17,7 +16,6 @@ import Favorites from "./pages/Favorites";
 import Profile from "./pages/Profile";
 
 function App() {
-  // const {location} = useLocation();
   return (
     <Router>
       <MaybeShowNavbar>

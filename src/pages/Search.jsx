@@ -1,16 +1,20 @@
 import { HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import MovieList from "../components/MovieList";
+import { useFirebase } from "../context/Firebase";
 
 export default function Search() {
-  const [query, setQuery] = useState("");
+  const query = useFirebase().query;
+  const setQuery = useFirebase().setQuery;
+  const inputRef = React.useRef();
   const API_KEY = process.env.REACT_APP_API_KEY;
   useEffect(() => {
     document.title = "INDI - Search";
     window.scrollTo(0, 0);
-  }, [])
-  
+    inputRef.current.focus();
+  }, []);
+
   return (
     <>
       <HStack
@@ -21,7 +25,7 @@ export default function Search() {
         }
         backdropFilter={"brightness(85%)"}
       >
-        <form onSubmit={(e)=>e.preventDefault()}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <InputGroup
             display={"flex"}
             alignItems={"center"}
@@ -32,6 +36,7 @@ export default function Search() {
               <IoIosSearch size={"1.5rem"} />
             </InputLeftElement>
             <Input
+              ref={inputRef}
               type="text"
               minW={["90vw", "60vw"]}
               rounded="full"
@@ -39,6 +44,7 @@ export default function Search() {
               fontSize={"1.2rem"}
               border={"1px solid #101010"}
               _focusVisible={{ border: "none", boxShadow: "0 0 7px red" }}
+              textTransform={"capitalize"}
               transition={"all 0.2s"}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -46,15 +52,16 @@ export default function Search() {
           </InputGroup>
         </form>
       </HStack>
-      {
-        query ? 
+      {query ? (
         <MovieList
           title={`Search results for "${query}"`}
           url={`https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${API_KEY}`}
           query={query}
           showSortBy={false}
-        /> : ''
-      }
+        />
+      ) : (
+        ""
+      )}
     </>
   );
 }

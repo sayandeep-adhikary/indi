@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { FaCamera } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
+import { IoMdImages, IoIosRemoveCircle } from "react-icons/io";
 import {
   Avatar,
   Box,
@@ -17,24 +18,35 @@ import {
   Card,
   CardBody,
   CardFooter,
+  Divider,
   HStack,
   Heading,
   IconButton,
   Image,
   Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
   Stack,
   Text,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { getDownloadURL, ref as strgRef, uploadBytes } from "firebase/storage";
-import { ref as dbRef, onValue, set, update } from "firebase/database";
+import { ref as dbRef, onValue, update } from "firebase/database";
 
 export default function Profile() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const isLoggedIn = useFirebase().isLoggedIn;
   const toast = useToast();
   const navigate = useNavigate();
-  const [image, setImage] = React.useState("https://dummyimage.com/hd1080");
+  const inputRef = React.useRef(null);
+  const [image, setImage] = React.useState("");
+  const [profilePic, setProfilePic] = React.useState("");
   const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const [isEditable, setIsEditable] = React.useState(false);
   const nameRef = React.useRef(null);
   const user = useFirebase().user;
@@ -69,6 +81,62 @@ export default function Profile() {
           });
         });
     });
+  };
+
+  const handleProfilePicChange = async (e) => {
+    e.target.files[0] && setProfilePic(URL.createObjectURL(e.target.files[0]));
+    const folderName = "profile_pics";
+    const file = `/${user.uid}/profile.jpg`;
+    const storageRef = strgRef(storage, `${folderName}/${file}`);
+    await uploadBytes(storageRef, e.target.files[0]);
+    getDownloadURL(strgRef(storage, `${folderName}/${file}`)).then((url) => {
+      update(dbRef(db, `users/${user.uid}`), { profilePic: url })
+        .then(() => {
+          toast({
+            title: "Profile Picture Updated Successfully.",
+            status: "success",
+            variant: "subtle",
+            position: "top",
+            isClosable: true,
+          });
+        })
+        .catch((error) => {
+          toast({
+            title: capitalizeFirstLetter(
+              error.code.split("auth/")[1].split("-").join(" ")
+            ),
+            status: "error",
+            variant: "subtle",
+            position: "top",
+            isClosable: true,
+          });
+        });
+    });
+  };
+
+  const handleProfilePicRemove = () => {
+    update(dbRef(db, `users/${user.uid}`), { profilePic: "" })
+      .then(() => {
+        toast({
+          title: "Profile Picture Removed Successfully.",
+          status: "success",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+        setProfilePic("");
+      })
+      .catch((error) => {
+        toast({
+          title: capitalizeFirstLetter(
+            error.code.split("auth/")[1].split("-").join(" ")
+          ),
+          status: "error",
+          variant: "subtle",
+          position: "top",
+          isClosable: true,
+        });
+      });
   };
 
   const handleNameEdit = () => {
@@ -124,16 +192,27 @@ export default function Profile() {
         const dbR = dbRef(db, `users/${user?.uid}`);
         onValue(dbR, (snapshot) => {
           const data = snapshot?.val() || {};
+          setProfilePic(data.profilePic);
           setImage(data.coverPic);
           setName(data.name);
+          setEmail(data.email);
         });
       }
     };
     getUserData();
-  }, [isLoggedIn, navigate, user?.uid]);
+  }, [isLoggedIn, navigate, user?.uid, user]);
 
   return (
     <Box pt={["4rem", "6rem"]} pb={[0, "8rem"]} bg={"#222"}>
+      <Input
+        type="file"
+        opacity={0}
+        ref={inputRef}
+        pos={"absolute"}
+        zIndex={-500}
+        accept="image/*"
+        onChange={(e) => handleProfilePicChange(e)}
+      />
       <Box minH={["fit-content", "40vh"]} pos={"relative"} px={[0, 20]}>
         <Image
           src={image}
@@ -141,6 +220,7 @@ export default function Profile() {
           h={["200px", "450px"]}
           w={"100%"}
           borderRadius={[0, "1rem"]}
+          bg={"linear-gradient(to right, #ff6e7f, #bfe9ff)"}
         />
         <Box pos={"absolute"} top={["10px", "1rem"]} right={["10px", "6rem"]}>
           <label htmlFor="file-upload">
@@ -165,7 +245,7 @@ export default function Profile() {
         <Card
           direction={{ base: "column", sm: "row" }}
           variant="outline"
-          maxW={"fit-content"}
+          maxW={["100%", "2xl"]}
           pos={["", "absolute"]}
           left={0}
           right={0}
@@ -173,17 +253,21 @@ export default function Profile() {
           margin={"auto"}
           display={"flex"}
           alignItems={"center"}
-          justifyContent={"center"}
-          p={4}
+          justifyContent={"space-evenly"}
+          p={[10, 6]}
           borderRadius={[0, "1rem"]}
         >
           <Avatar
             size={"2xl"}
             cursor={"pointer"}
-            name="Segun Adebayo"
-            src="https://bit.ly/sage-adebayo"
+            name={name}
+            bg={"linear-gradient(to right, #ff416c, #ff4b2b)"}
+            color={"white"}
+            src={profilePic}
+            transform={"scale(1.2)"}
             transition={"all 0.3s ease-in-out"}
             _hover={{ filter: "brightness(0.8)" }}
+            onClick={onOpen}
           />
 
           <Stack>
@@ -191,7 +275,7 @@ export default function Profile() {
               <HStack justifyContent={["center", "left"]}>
                 {isEditable ? (
                   <form onSubmit={handleNameSubmit}>
-                    <Stack flexDir={['column', 'row']}>
+                    <Stack flexDir={["column", "row"]}>
                       <Input
                         type="text"
                         textAlign={["center", "left"]}
@@ -200,10 +284,20 @@ export default function Profile() {
                         variant={"flushed"}
                         autoFocus
                         _focusVisible={{ borderBottom: "1px solid #ff4e4e" }}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                       />
-                      <ButtonGroup variant="outline" size={['sm', 'md']} mx={'auto'}>
-                        <Button colorScheme="red" type="submit">Save</Button>
-                        <Button onClick={()=>setIsEditable(false)}>Cancel</Button>
+                      <ButtonGroup
+                        variant="outline"
+                        size={["sm", "md"]}
+                        mx={"auto"}
+                      >
+                        <Button colorScheme="red" type="submit">
+                          Save
+                        </Button>
+                        <Button onClick={() => setIsEditable(false)}>
+                          Cancel
+                        </Button>
                       </ButtonGroup>
                     </Stack>
                   </form>
@@ -228,8 +322,7 @@ export default function Profile() {
               </HStack>
 
               <Text py="2" fontFamily={"'Inter', sans-serif"}>
-                Caffè latte is a coffee beverage of Italian origin made with
-                espresso and steamed milk.
+                {email}
               </Text>
             </CardBody>
 
@@ -250,6 +343,63 @@ export default function Profile() {
           </Stack>
         </Card>
       </Box>
+      <Modal isCentered size={["xs", "xl"]} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent borderRadius={"1rem"}>
+          <ModalCloseButton _focusVisible={{ outline: "none" }} />
+          <ModalBody p={8}>
+            <Button
+              variant={"ghost"}
+              colorScheme="red"
+              w={"100%"}
+              justifyContent={"start"}
+              my={2}
+              onClick={() => {
+                inputRef.current.click();
+                onClose();
+              }}
+            >
+              <HStack>
+                <IconButton
+                  variant={"outline"}
+                  colorScheme="red"
+                  size={"sm"}
+                  icon={<IoMdImages size={20} />}
+                  pointerEvents={"none"}
+                />
+                <Text fontFamily={"'Inter', sans-serif"}>
+                  Change Profile Picture
+                </Text>
+              </HStack>
+            </Button>
+            <Divider />
+            <Button
+              variant={"ghost"}
+              colorScheme="red"
+              w={"100%"}
+              justifyContent={"start"}
+              my={2}
+              onClick={() => {
+                handleProfilePicRemove();
+                onClose();
+              }}
+            >
+              <HStack>
+                <IconButton
+                  variant={"outline"}
+                  colorScheme="red"
+                  size={"sm"}
+                  icon={<IoIosRemoveCircle size={20} />}
+                  pointerEvents={"none"}
+                />
+                <Text fontFamily={"'Inter', sans-serif"}>
+                  Remove Profile Picture
+                </Text>
+              </HStack>
+            </Button>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }

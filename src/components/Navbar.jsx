@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   Container,
   Drawer,
@@ -10,6 +11,9 @@ import {
   HStack,
   IconButton,
   Image,
+  Input,
+  InputGroup,
+  InputRightAddon,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -21,14 +25,10 @@ import { IoSearchOutline, IoSearch } from "react-icons/io5";
 import { PiStar, PiStarFill, PiUserCircle } from "react-icons/pi";
 import { MdLogout, MdOutlineExplore, MdExplore } from "react-icons/md";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useFirebase } from "../context/Firebase";
+import { db, useFirebase } from "../context/Firebase";
+import { ref as dbRef, onValue } from "firebase/database";
 
 const menuItems = [
-  {
-    label: "Search",
-    link: "/search/movies",
-    icon: <IoSearchOutline size={22} />,
-  },
   {
     label: "Explore Movies",
     link: "/explore",
@@ -50,13 +50,25 @@ export default function Navbar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const isLoggedIn = useFirebase().isLoggedIn;
   const signOutUser = useFirebase().signOutUser;
+  const [profilePic, setProfilePic] = useState(null);
+  const [name, setName] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const user = useFirebase().user;
 
   const [isHomeFilled, setIsHomeFilled] = useState(true);
   const [isSearchFilled, setIsSearchFilled] = useState(false);
   const [isExploreFilled, setIsExploreFilled] = useState(false);
   const [isFavoritesFilled, setIsFavoritesFilled] = useState(false);
+
+  const setQuery = useFirebase().setQuery;
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setQuery(e.target.search.value);
+    navigate("/search/movies");
+    onClose();
+  };
 
   useEffect(() => {
     switch (location.pathname) {
@@ -92,7 +104,18 @@ export default function Navbar() {
         setIsFavoritesFilled(false);
         break;
     }
-  }, [location]);
+    const getUserData = () => {
+      if (user) {
+        const dbR = dbRef(db, `users/${user?.uid}`);
+        onValue(dbR, (snapshot) => {
+          const data = snapshot?.val() || {};
+          setProfilePic(data.profilePic);
+          setName(data.name);
+        });
+      }
+    };
+    getUserData();
+  }, [location, user]);
 
   return (
     <>
@@ -155,6 +178,42 @@ export default function Navbar() {
             alignItems={"center"}
             justifyContent={["flex-start"]}
           >
+            <form onSubmit={(e) => handleSearch(e)}>
+              <InputGroup
+                variant={"filled"}
+                bgColor={"gray.800"}
+                _hover={{ bgColor: "gray.700" }}
+                borderRadius={"1rem"}
+                my={2}
+                size={"md"}
+              >
+                <Input
+                  bgColor={"gray.800"}
+                  name="search"
+                  color={"white"}
+                  _focusVisible={{ bgColor: "gray.800" }}
+                  _hover={{ bgColor: "gray.700" }}
+                  py={[10, 3]}
+                  textTransform={"capitalize"}
+                  type="text"
+                  placeholder="Search For Movies"
+                  autoComplete="off"
+                />
+                <InputRightAddon
+                  bgColor={"gray.800"}
+                  p={0}
+                  _hover={{ bg: "#ff4e4e" }}
+                  transition={"all 0.3s ease-in-out"}
+                >
+                  <IconButton
+                    icon={<IoSearch size={22} color="white" />}
+                    variant="transparent"
+                    color={"white"}
+                    type="submit"
+                  />
+                </InputRightAddon>
+              </InputGroup>
+            </form>
             {menuItems.map((item) => (
               <Link to={item.link} key={item.label} style={{ width: "100%" }}>
                 <Button
@@ -272,12 +331,19 @@ export default function Navbar() {
           />
         </Link>
         <Link to={"/profile"}>
-          <IconButton
+          {/* <IconButton
             icon={<PiUserCircle size={24} />}
             color={"white"}
             bgColor={"#101010"}
             _active={{ bgColor: "#101010" }}
             _hover={{ bgColor: "#101010" }}
+          /> */}
+          <Avatar
+            size={"xs"}
+            name={name}
+            bg={"linear-gradient(to right, #ff416c, #ff4b2b)"}
+            color={"white"}
+            src={profilePic}
           />
         </Link>
       </HStack>

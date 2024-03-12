@@ -10,7 +10,6 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
   signInWithPopup,
-  updateProfile,
 } from "firebase/auth";
 import { getDatabase, ref, set, remove, update } from "firebase/database";
 import { getStorage } from "firebase/storage";
@@ -20,7 +19,6 @@ const firebaseConfig = {
   apiKey: "AIzaSyDxILbSWuofcF8cZroHpKhuVt4xTrKYtNw",
   authDomain: "indi-81cd4.firebaseapp.com",
   projectId: "indi-81cd4",
-  storageBucket: "indi-81cd4.appspot.com",
   messagingSenderId: "576050860088",
   appId: "1:576050860088:web:277b8e82c2a618052116cd",
   databaseURL: "https://indi-81cd4-default-rtdb.firebaseio.com",
@@ -46,6 +44,7 @@ export const FirebaseProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [name, setName] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [query, setQuery] = useState("");
   const toast = useToast();
 
   const createUserWithPassword = (name, email, password) => {
@@ -254,6 +253,8 @@ export const FirebaseProvider = ({ children }) => {
     user,
     addToFavourites,
     removeFromFavourites,
+    query,
+    setQuery,
   };
   useEffect(() => {
     onAuthStateChanged(firebaseAuth, (user) => {
@@ -261,15 +262,15 @@ export const FirebaseProvider = ({ children }) => {
         setUser(user);
         setIsLoggedIn(true);
         update(ref(db, `users/${user.uid}`), {
-          email: user.email,
-          name: user.displayName || name,
+          email: user.email === null ? "anonymous@xyz.com" : user.email,
+          name: name || user.displayName === null ? "Anonymous User" : user.displayName,
         });
       } else {
         setUser(null);
         setIsLoggedIn(false);
       }
     });
-  }, [user]);
+  }, [user, name]);
 
   return (
     <FirebaseContext.Provider value={value}>

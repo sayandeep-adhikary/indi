@@ -7,16 +7,43 @@ import {
   Stack,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import footerImg from "../assets/footerImg.png";
+import { useFirebase } from "../context/Firebase";
 
 export default function Footer() {
+  const user = useFirebase().user;
+  const [email, setEmail] = useState("");
+  const toast = useToast();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (user) {
+      setEmail("");
+      toast({
+        title: "Subscribed Successfully.",
+        status: "success",
+        variant: "subtle",
+        position: "top",
+        isClosable: true,
+      });
+      return;
+    }
+    toast({
+      title: "Please login to subscribe.",
+      status: "warning",
+      variant: "subtle",
+      position: "top",
+      isClosable: true,
+    });
+  };
+
   return (
     <Box
       bgColor={["#232323", "black"]}
       px={[10, 20]}
-      py={['3rem', 30]}
+      py={["3rem", 30]}
       bgImage={footerImg}
       bgRepeat={"no-repeat"}
       bgPos={"right"}
@@ -48,7 +75,7 @@ export default function Footer() {
         >
           Stay updated with the latest movies, news and articles from INDI.{" "}
         </Text>
-        <form>
+        <form onSubmit={(e) => handleSubmit(e)}>
           <FormControl my={5}>
             <Stack gap={[5, 3]} direction={["column", "row"]}>
               <Input
@@ -58,6 +85,12 @@ export default function Footer() {
                 placeholder="Your Email"
                 letterSpacing={"1px"}
                 _placeholder={{ color: "white" }}
+                type="email"
+                name="email"
+                id="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <Button
                 variant={"outline"}
@@ -69,6 +102,7 @@ export default function Footer() {
                 letterSpacing={"1px"}
                 _hover={{ bgColor: "gray.900" }}
                 w={"fit-content"}
+                type="submit"
               >
                 Submit
               </Button>
