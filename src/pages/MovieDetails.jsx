@@ -32,7 +32,7 @@ import { db, useFirebase } from "../context/Firebase";
 import { onValue, ref } from "firebase/database";
 
 export default function MovieDetails() {
-  const API_KEY = process.env.REACT_APP_API_KEY;
+  const API_KEY = '56c9c02aa32a418f08a672779aa2d077';
   const [movieDetailsLoaded, setMovieDetailsLoaded] = useState(false);
   const [movieDetails, setMovieDetails] = useState([]);
   const [movieImages, setMovieImages] = useState([]);

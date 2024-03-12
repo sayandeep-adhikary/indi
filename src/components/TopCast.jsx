@@ -41,7 +41,7 @@ export default function TopCast({ id }) {
       },
     ],
   };
-  const url = `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.REACT_APP_API_KEY}`;
+  const url = `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${'56c9c02aa32a418f08a672779aa2d077'}`;
   const [topCast, setTopCast] = useState([]);
   useEffect(() => {
     const getTopCast = async () => {

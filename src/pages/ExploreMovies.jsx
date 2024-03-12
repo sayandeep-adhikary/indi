@@ -3,7 +3,7 @@ import MovieList from "../components/MovieList";
 import { Box, Heading, Text } from "@chakra-ui/react";
 
 export default function ExploreMovies() {
-  const API_KEY = process.env.REACT_APP_API_KEY;
+  const API_KEY = '56c9c02aa32a418f08a672779aa2d077';
   useEffect(() => {
     document.title = "INDI - Explore Movies";
     window.scrollTo(0, 0);

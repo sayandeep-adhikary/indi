@@ -3,7 +3,7 @@ import CarouselComponent from "../components/Carousel";
 import MovieList from "../components/MovieList";
 
 export default function Home() {
-  const API_KEY = process.env.REACT_APP_API_KEY;
+  const API_KEY = '56c9c02aa32a418f08a672779aa2d077';
   useEffect(() => {
     document.title = "INDI";
     window.scrollTo(0, 0);

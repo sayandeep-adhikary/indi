@@ -8,7 +8,7 @@ export default function Search() {
   const query = useFirebase().query;
   const setQuery = useFirebase().setQuery;
   const inputRef = React.useRef();
-  const API_KEY = process.env.REACT_APP_API_KEY;
+  const API_KEY = '56c9c02aa32a418f08a672779aa2d077';
   useEffect(() => {
     document.title = "INDI - Search";
     window.scrollTo(0, 0);

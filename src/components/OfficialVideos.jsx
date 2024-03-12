@@ -18,7 +18,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 export default function OfficialVideos() {
-  const API_KEY = process.env.REACT_APP_API_KEY;
+  const API_KEY = '56c9c02aa32a418f08a672779aa2d077';
   const [videos, setVideos] = useState([]);
   const [videoKey, setVideoKey] = useState("");
   const settings = {
