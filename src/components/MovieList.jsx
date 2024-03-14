@@ -14,7 +14,6 @@ import {
   WrapItem,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import noPoster from "../assets/noPoster.jpg";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
@@ -58,9 +57,11 @@ export default function MovieList({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${url}&sort_by=${sortBy}`);
-        setMovies(response.data.results);
-        // console.log(movies)
+        fetch(`${url}&sort_by=${sortBy}`)
+          .then((res) => res.json())
+          .then((data) => {
+            setMovies(data.results);
+          });
       } catch (error) {
         // setError(true);
       } finally {
