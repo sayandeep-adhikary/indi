@@ -18,11 +18,25 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 export default function OfficialVideos() {
-  const API_KEY = '56c9c02aa32a418f08a672779aa2d077';
+  const API_KEY = "56c9c02aa32a418f08a672779aa2d077";
   const [videos, setVideos] = useState([]);
   const [videoKey, setVideoKey] = useState("");
+
+  const { id } = useParams();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  useEffect(() => {
+    const getVideos = async () => {
+      const videos = await axios.get(
+        `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${API_KEY}`
+      );
+      setVideos(videos.data.results);
+      // console.log(videos.data.results)
+    };
+    getVideos();
+  }, [id, API_KEY]);
+
   const settings = {
-    infinite: true,
+    infinite: videos.length > 4,
     slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: true,
@@ -38,7 +52,7 @@ export default function OfficialVideos() {
         settings: {
           slidesToShow: 4,
           slidesToScroll: 4,
-          infinite: true,
+          infinite: videos.length > 4,
           dots: true,
         },
       },
@@ -48,6 +62,7 @@ export default function OfficialVideos() {
           slidesToShow: 2,
           slidesToScroll: 2,
           initialSlide: 2,
+          infinite: videos.length > 2,
         },
       },
       {
@@ -55,22 +70,11 @@ export default function OfficialVideos() {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
+          infinite: videos.length > 1,
         },
       },
     ],
   };
-  const { id } = useParams();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  useEffect(() => {
-    const getVideos = async () => {
-      const videos = await axios.get(
-        `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${API_KEY}`
-      );
-      setVideos(videos.data.results);
-      // console.log(videos.data.results)
-    };
-    getVideos();
-  }, [id, API_KEY]);
 
   return (
     <Box p={[4, 8]} py={10} bgColor={"#232323"}>
