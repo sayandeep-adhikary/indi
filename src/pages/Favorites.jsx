@@ -9,7 +9,6 @@ import {
   Heading,
   Image,
   SimpleGrid,
-  Skeleton,
   Text,
   VStack,
   Wrap,
@@ -23,7 +22,6 @@ import noPoster from "../assets/noPoster.jpg";
 
 export default function Favorites() {
   const [favourites, setFavourites] = useState([]);
-  const [loaded, setLoaded] = useState(false);
   const isLoggedIn = useFirebase().isLoggedIn;
   const user = useFirebase().user;
   const navigate = useNavigate();
@@ -40,7 +38,6 @@ export default function Favorites() {
           const data = snapshot?.val() || {};
           const arr = Object?.values(data);
           setFavourites(arr);
-          setLoaded(true);
         });
       }
     };

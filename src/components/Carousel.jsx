@@ -7,7 +7,6 @@ import { FaPlay } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import noBackdrop from "../assets/abstract.jpg";
-import noPoster from "../assets/noPoster.jpg";
 
 const genreObj = [
   { id: 28, name: "Action" },
