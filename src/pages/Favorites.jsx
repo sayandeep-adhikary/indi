@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { db, useFirebase } from "../context/Firebase";
 import { useNavigate } from "react-router-dom";
-import { Badge, Box, Card, Flex, Heading, Image, SimpleGrid, Skeleton, Text, VStack, Wrap, WrapItem } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Card,
+  Flex,
+  Heading,
+  Image,
+  SimpleGrid,
+  Skeleton,
+  Text,
+  VStack,
+  Wrap,
+  WrapItem,
+} from "@chakra-ui/react";
 import { onValue, ref } from "firebase/database";
 import { Link } from "react-router-dom";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
@@ -33,8 +46,7 @@ export default function Favorites() {
     };
     getFavorites();
   }, [isLoggedIn, navigate, user]);
-  useEffect(() => {
-  }, [favourites]);
+  useEffect(() => {}, [favourites]);
 
   return (
     <Box p={[4, 8]} py={10} bg={"linear-gradient(to top, #41295a, #2f0743)"}>
@@ -45,100 +57,96 @@ export default function Favorites() {
         {favourites.length > 0 ? (
           <SimpleGrid columns={[2, null, 5]} spacing={"1rem"} my={10}>
             {favourites.map((movie) => (
-              <Skeleton isLoaded={loaded} key={movie.id}>
-                <Link to={`/movie/${movie.id}`}>
-                  <Card
-                    p={1}
-                    bg={"transparent"}
-                    color={"white"}
-                    variant={"filled"}
-                  >
-                    <Box pos={"relative"} mb={5}>
-                      <Box
-                        pos={"absolute"}
-                        top={"-1.5rem"}
-                        right={"1rem"}
-                        w={"30%"}
-                        bg={"white"}
-                        zIndex={100}
-                        p={1}
-                        borderRadius={"full"}
-                      >
-                        <CircularProgressbar
-                          value={movie.vote_average}
-                          maxValue={10}
-                          text={`${movie.vote_average.toPrecision(2)}`}
-                          styles={buildStyles({
-                            textColor: "black",
-                            pathColor:
-                              movie.vote_average > 7
-                                ? "#18864B"
-                                : movie.vote_average > 4
-                                ? "#FFA500"
-                                : "red",
-                            trailColor: "white",
-                            textSize: "2rem",
-                          })}
-                        />
-                      </Box>
-                      <Wrap
-                        pos={"absolute"}
-                        bottom={0}
-                        right={0}
-                        justify={"flex-end"}
-                      >
-                        {
-                          movie.genres.map((genre) => {
-                            return (
-                              <WrapItem key={genre.id}>
-                                <Badge
-                                  textTransform={"capitalize"}
-                                  bg={"red.500"}
-                                  color={"white"}
-                                  zIndex={100}
-                                  fontSize={"0.7rem"}
-                                >
-                                  {genre.name}
-                                </Badge>
-                              </WrapItem>
-                            );
-                          })
-                        }
-                      </Wrap>
-                      <Image
-                        borderRadius={"1rem"}
-                        height={["16rem", "22rem"]}
-                        src={
-                          movie.poster_path
-                            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                            : noPoster
-                        }
-                        alt={movie.title}
-                        _hover={{
-                          transform: "scale(1.01)",
-                          transition: "all 0.5s",
-                          boxShadow: "0 0 20px #FF4E4E",
-                        }}
+              <Link to={`/movie/${movie.id}`} key={movie.id}>
+                <Card
+                  p={1}
+                  bg={"transparent"}
+                  color={"white"}
+                  variant={"filled"}
+                >
+                  <Box pos={"relative"} mb={5}>
+                    <Box
+                      pos={"absolute"}
+                      top={"-1.5rem"}
+                      right={"1rem"}
+                      w={"30%"}
+                      bg={"white"}
+                      zIndex={100}
+                      p={1}
+                      borderRadius={"full"}
+                    >
+                      <CircularProgressbar
+                        value={movie.vote_average}
+                        maxValue={10}
+                        text={`${movie.vote_average.toPrecision(2)}`}
+                        styles={buildStyles({
+                          textColor: "black",
+                          pathColor:
+                            movie.vote_average > 7
+                              ? "#18864B"
+                              : movie.vote_average > 4
+                              ? "#FFA500"
+                              : "red",
+                          trailColor: "white",
+                          textSize: "2rem",
+                        })}
                       />
                     </Box>
-                    <Text
-                      fontFamily={"'Inter', sans-serif"}
-                      fontSize={"1.2rem"}
-                      fontWeight={600}
-                      mb={2}
+                    <Wrap
+                      pos={"absolute"}
+                      bottom={0}
+                      right={0}
+                      justify={"flex-end"}
                     >
-                      {movie.title}
-                    </Text>
-                    <Text
-                      fontFamily={"'Inter', sans-serif"}
-                      fontSize={"1rem"}
-                      color={"gray.400"}
-                    >
-                      {new Date(movie.release_date).toDateString().slice(4)}
-                    </Text>
-                  </Card>
-                </Link>
-              </Skeleton>
+                      {movie.genres.map((genre) => {
+                        return (
+                          <WrapItem key={genre.id}>
+                            <Badge
+                              textTransform={"capitalize"}
+                              bg={"red.500"}
+                              color={"white"}
+                              zIndex={100}
+                              fontSize={"0.7rem"}
+                            >
+                              {genre.name}
+                            </Badge>
+                          </WrapItem>
+                        );
+                      })}
+                    </Wrap>
+                    <Image
+                      borderRadius={"1rem"}
+                      height={["16rem", "22rem"]}
+                      src={
+                        movie.poster_path
+                          ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                          : noPoster
+                      }
+                      alt={movie.title}
+                      _hover={{
+                        transform: "scale(1.01)",
+                        transition: "all 0.5s",
+                        boxShadow: "0 0 20px #FF4E4E",
+                      }}
+                    />
+                  </Box>
+                  <Text
+                    fontFamily={"'Inter', sans-serif"}
+                    fontSize={"1.2rem"}
+                    fontWeight={600}
+                    mb={2}
+                  >
+                    {movie.title}
+                  </Text>
+                  <Text
+                    fontFamily={"'Inter', sans-serif"}
+                    fontSize={"1rem"}
+                    color={"gray.400"}
+                  >
+                    {new Date(movie.release_date).toDateString().slice(4)}
+                  </Text>
+                </Card>
+              </Link>
             ))}
             <Image src={""} />
           </SimpleGrid>

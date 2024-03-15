@@ -241,12 +241,13 @@ function BannerComponent({ movieDetails, trailer }) {
                 <Button
                   leftIcon={<FaPlay size={20} />}
                   color={"#FF4E4E"}
-                  variant={"outline"}
+                  variant={"ghost"}
                   border={"1px solid #FF4E4E"}
                   p={6}
                   borderRadius={"full"}
                   _hover={{ bg: "#FF4E4E", color: "white" }}
                   onClick={onOpen}
+                  backdropFilter={"blur(10px) hue-rotate(90deg)"}
                 >
                   Watch Trailer
                 </Button>

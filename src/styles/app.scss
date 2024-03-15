@@ -7,6 +7,9 @@
     -webkit-tap-highlight-color: transparent;
     scroll-behavior: smooth !important;
 }
+html{
+    background-color: #000;
+}
 body::-webkit-scrollbar {
     display: none;
 }

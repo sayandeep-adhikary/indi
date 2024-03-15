@@ -51,40 +51,31 @@ export default function CarouselComponent() {
   }, [API_KEY]);
 
   return (
-    popularMovies.length > 0 && (
+    popularMovies.length > 0 ? (
       <Carousel
         autoPlay={true}
         infiniteLoop
         interval={5000}
         showStatus={false}
         showThumbs={false}
-        // showArrows={false}
+        showArrows={false}
         swipeable={true}
-        showIndicators={false}
+        // showIndicators={false}
       >
         {popularMovies &&
           popularMovies.slice(0, 8).map((item) => (
             <Box pos={"relative"} key={item.id}>
-              <picture style={{ filter: "brightness(95%)" }}>
-                <source
-                  media="(min-width: 500px)"
-                  srcSet={
+                <Image
+                  height={["45vh", "100vh"]}
+                  // aspectRatio={16 / 12}
+                  src={
                     item.backdrop_path
                       ? `https://image.tmdb.org/t/p/original${item.backdrop_path}`
                       : noBackdrop
                   }
-                />
-                <Image
-                  height={["70vh", "100vh"]}
-                  src={
-                    item.poster_path
-                      ? `https://image.tmdb.org/t/p/original${item.poster_path}`
-                      : noPoster
-                  }
                   alt={item.title}
                   filter={"brightness(55%)"}
                 />
-              </picture>
               <VStack
                 pos={"absolute"}
                 // display={["none", "flex"]}
@@ -97,7 +88,7 @@ export default function CarouselComponent() {
               >
                 <Heading
                   color={"white"}
-                  fontSize={["2.5rem", "5.5rem"]}
+                  fontSize={["2rem", "5.5rem"]}
                   fontFamily={"'Bebas Neue', sans-serif"}
                   letterSpacing={"2px"}
                   textTransform={"uppercase"}
@@ -128,6 +119,7 @@ export default function CarouselComponent() {
                   letterSpacing={"1px"}
                   paddingRight={["1rem", "40rem"]}
                   lineHeight={"180%"}
+                  display={["none", "block"]}
                 >
                   {item?.overview?.length > 200
                     ? item.overview.slice(0, 200) + "..."
@@ -139,7 +131,7 @@ export default function CarouselComponent() {
                     color={"#FF4E4E"}
                     variant={"outline"}
                     border={"1px solid #FF4E4E"}
-                    p={6}
+                    p={[3, 6]}
                     borderRadius={"full"}
                     _hover={{ bg: "#FF4E4E", color: "white" }}
                   >
@@ -159,6 +151,7 @@ export default function CarouselComponent() {
           ))}
       </Carousel>
     )
+    : null
   );
 }
 // box-shadow: rgba(0, 0, 0, 0.45) 1px 1px 40px 0px inset;

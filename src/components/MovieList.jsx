@@ -59,13 +59,15 @@ export default function MovieList({
       try {
         fetch(`${url}&sort_by=${sortBy}`)
           .then((res) => res.json())
+          .catch((error) => {
+            // setError(true);
+          })
           .then((data) => {
-            setMovies(data.results);
-          });
+            setMovies(data?.results ? data?.results : []);
+            setLoaded(true);
+          })
       } catch (error) {
         // setError(true);
-      } finally {
-        setLoaded(true);
       }
     };
     const timeOut = setTimeout(() => {
@@ -77,7 +79,7 @@ export default function MovieList({
   }, [url, sortBy]);
 
   return (
-    <Box p={[4, 8]} py={10} bg={"linear-gradient(to right, #141e30, #243b55)"}>
+    <Box p={[4, 8]} pt={20} bg={"linear-gradient(to right, #141e30, #243b55)"}>
       <Stack flexDirection={["column", "row"]} justifyContent={"space-between"}>
         <Heading color={"white"} fontFamily={"'Inter', sans-serif"}>
           {title}
@@ -135,99 +137,112 @@ export default function MovieList({
         ""
       )}
       <SimpleGrid columns={[2, null, 5]} spacing={"1rem"} my={10}>
-        {movies.map((movie) => (
-          <Skeleton isLoaded={loaded} key={movie.id}>
-            <Link to={`/movie/${movie.id}`}>
-              <Card p={1} bg={"transparent"} color={"white"} variant={"filled"}>
-                <Box pos={"relative"} mb={5}>
-                  <Box
-                    pos={"absolute"}
-                    top={"-1.5rem"}
-                    right={"1rem"}
-                    w={"30%"}
-                    bg={"white"}
-                    zIndex={100}
-                    p={1}
-                    borderRadius={"full"}
-                  >
-                    <CircularProgressbar
-                      value={movie.vote_average}
-                      maxValue={10}
-                      text={`${movie.vote_average.toPrecision(2)}`}
-                      styles={buildStyles({
-                        textColor: "black",
-                        pathColor:
-                          movie.vote_average > 7
-                            ? "#18864B"
-                            : movie.vote_average > 4
-                            ? "#FFA500"
-                            : "red",
-                        trailColor: "white",
-                        textSize: "2rem",
+        {loaded
+          ? movies.map((movie) => (
+              <Link to={`/movie/${movie.id}`} key={movie.id}>
+                <Card
+                  p={1}
+                  bg={"transparent"}
+                  color={"white"}
+                  variant={"filled"}
+                >
+                  <Box pos={"relative"} mb={5}>
+                    <Box
+                      pos={"absolute"}
+                      top={"-1.5rem"}
+                      right={"1rem"}
+                      w={"30%"}
+                      bg={"white"}
+                      zIndex={100}
+                      p={1}
+                      borderRadius={"full"}
+                    >
+                      <CircularProgressbar
+                        value={movie.vote_average}
+                        maxValue={10}
+                        text={`${movie.vote_average.toPrecision(2)}`}
+                        styles={buildStyles({
+                          textColor: "black",
+                          pathColor:
+                            movie.vote_average > 7
+                              ? "#18864B"
+                              : movie.vote_average > 4
+                              ? "#FFA500"
+                              : "red",
+                          trailColor: "white",
+                          textSize: "2rem",
+                        })}
+                      />
+                    </Box>
+                    <Wrap
+                      pos={"absolute"}
+                      bottom={0}
+                      right={0}
+                      justify={"flex-end"}
+                    >
+                      {genres.map((genre) => {
+                        if (movie.genre_ids.includes(genre.id)) {
+                          return (
+                            <WrapItem key={genre.id}>
+                              <Badge
+                                textTransform={"capitalize"}
+                                bg={"red.500"}
+                                color={"white"}
+                                zIndex={100}
+                                fontSize={"0.7rem"}
+                              >
+                                {genre.name}
+                              </Badge>
+                            </WrapItem>
+                          );
+                        }
+                        return null;
                       })}
+                    </Wrap>
+                    <Image
+                      borderRadius={"1rem"}
+                      w={"100%"}
+                      height={["16rem", "22rem"]}
+                      src={
+                        movie.poster_path
+                          ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                          : noPoster
+                      }
+                      alt={movie.title}
+                      _hover={{
+                        transform: "scale(1.01)",
+                        transition: "all 0.5s",
+                        boxShadow: "0 0 20px #FF4E4E",
+                      }}
                     />
                   </Box>
-                  <Wrap
-                    pos={"absolute"}
-                    bottom={0}
-                    right={0}
-                    justify={"flex-end"}
+                  <Text
+                    fontFamily={"'Inter', sans-serif"}
+                    fontSize={"1.2rem"}
+                    fontWeight={600}
+                    mb={2}
                   >
-                    {genres.map((genre) => {
-                      if (movie.genre_ids.includes(genre.id)) {
-                        return (
-                          <WrapItem key={genre.id}>
-                            <Badge
-                              textTransform={"capitalize"}
-                              bg={"red.500"}
-                              color={"white"}
-                              zIndex={100}
-                              fontSize={"0.7rem"}
-                            >
-                              {genre.name}
-                            </Badge>
-                          </WrapItem>
-                        );
-                      }
-                      return null;
-                    })}
-                  </Wrap>
-                  <Image
-                    borderRadius={"1rem"}
-                    height={["16rem", "22rem"]}
-                    src={
-                      movie.poster_path
-                        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                        : noPoster
-                    }
-                    alt={movie.title}
-                    _hover={{
-                      transform: "scale(1.01)",
-                      transition: "all 0.5s",
-                      boxShadow: "0 0 20px #FF4E4E",
-                    }}
-                  />
-                </Box>
-                <Text
-                  fontFamily={"'Inter', sans-serif"}
-                  fontSize={"1.2rem"}
-                  fontWeight={600}
-                  mb={2}
-                >
-                  {movie.title}
-                </Text>
-                <Text
-                  fontFamily={"'Inter', sans-serif"}
-                  fontSize={"1rem"}
-                  color={"gray.400"}
-                >
-                  {new Date(movie.release_date).toDateString().slice(4)}
-                </Text>
-              </Card>
-            </Link>
-          </Skeleton>
-        ))}
-        <Image src={""} />
+                    {movie.title}
+                  </Text>
+                  <Text
+                    fontFamily={"'Inter', sans-serif"}
+                    fontSize={"1rem"}
+                    color={"gray.400"}
+                  >
+                    {new Date(movie.release_date).toDateString().slice(4)}
+                  </Text>
+                </Card>
+              </Link>
+            ))
+          : [...Array(20)].map((_, i) => (
+              <Skeleton
+                key={i}
+                startColor={"#243b55"}
+                endColor={"#141e30"}
+                height={["16rem", "22rem"]}
+                borderRadius={"1rem"}
+              />
+            ))}
       </SimpleGrid>
     </Box>
   );
