@@ -32,7 +32,7 @@ import { db, useFirebase } from "../context/Firebase";
 import { onValue, ref } from "firebase/database";
 
 export default function MovieDetails() {
-  const API_KEY = '56c9c02aa32a418f08a672779aa2d077';
+  const API_KEY = "56c9c02aa32a418f08a672779aa2d077";
   const [movieDetailsLoaded, setMovieDetailsLoaded] = useState(false);
   const [movieDetails, setMovieDetails] = useState([]);
   const [movieImages, setMovieImages] = useState([]);
@@ -127,8 +127,7 @@ function BannerComponent({ movieDetails, trailer }) {
           const arr = Object?.values(data);
           if (arr.some((movie) => movie.id === movieDetails.id)) {
             setIsChecked(true);
-          }
-          else setIsChecked(false);
+          } else setIsChecked(false);
         });
       }
     };
@@ -251,7 +250,11 @@ function BannerComponent({ movieDetails, trailer }) {
                 >
                   Watch Trailer
                 </Button>
-                <Box>
+                <Box
+                  borderRadius={"full"}
+                  backdropFilter={"blur(10px) hue-rotate(90deg)"}
+                  border={"1px solid #FF4E4E"}
+                >
                   <input
                     type="checkbox"
                     id="checkbox"

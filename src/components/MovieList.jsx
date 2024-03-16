@@ -47,6 +47,7 @@ export default function MovieList({
   url = "",
   query = "",
   showSortBy = true,
+  showShimmer = true,
 }) {
   // console.log("title = " + title + " url = " + url);
   const [movies, setMovies] = useState([]);
@@ -65,7 +66,7 @@ export default function MovieList({
           .then((data) => {
             setMovies(data?.results ? data?.results : []);
             setLoaded(true);
-          })
+          });
       } catch (error) {
         // setError(true);
       }
@@ -234,7 +235,8 @@ export default function MovieList({
                 </Card>
               </Link>
             ))
-          : [...Array(20)].map((_, i) => (
+          : showShimmer
+          ? [...Array(20)].map((_, i) => (
               <Skeleton
                 key={i}
                 startColor={"#243b55"}
@@ -242,7 +244,8 @@ export default function MovieList({
                 height={["16rem", "22rem"]}
                 borderRadius={"1rem"}
               />
-            ))}
+            ))
+          : null}
       </SimpleGrid>
     </Box>
   );

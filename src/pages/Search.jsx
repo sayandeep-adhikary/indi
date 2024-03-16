@@ -58,6 +58,7 @@ export default function Search() {
           url={`https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${API_KEY}`}
           query={query}
           showSortBy={false}
+          showShimmer={false}
         />
       ) : (
         ""
