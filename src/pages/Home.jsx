@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import CarouselComponent from "../components/Carousel";
 import MovieList from "../components/MovieList";
 import {
+  Button,
   Heading,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalOverlay,
   Text,
   VStack,
@@ -84,6 +86,18 @@ export default function Home() {
                 understanding. Sincerely,
                 <span style={{ fontWeight: "bold" }}> INDI.</span>
               </Text>
+              <Button
+                bg={"linear-gradient(to right, #a770ef, #cf8bf3, #fdb99b)"}
+                _hover={{
+                  bg: "linear-gradient(to right, #a770ef, #cf8bf3, #fdb99b)",
+                  transform: "scale(1.05)",
+                }}
+                w={"full"}
+                transition={"all 0.3s"}
+                onClick={() => setIsOpen(false)}
+              >
+                I Understand
+              </Button>
             </VStack>
           </ModalBody>
         </ModalContent>
