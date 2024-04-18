@@ -113,6 +113,10 @@ export default function Navbar() {
           setName(data.name);
         });
       }
+      else{
+        setProfilePic(null);
+        setName("");
+      }
     };
     getUserData();
   }, [location, user]);
