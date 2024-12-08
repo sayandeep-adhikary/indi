@@ -70,7 +70,7 @@ export default function Home() {
               >
                 announcement
               </Heading>
-              <Text fontFamily={"'Inter', sans-serif"} textAlign={"justify"}>
+              <Text fontFamily={"'Inter', sans-serif"} textAlign={"left"}>
                 Due to restrictions in certain regions like{" "}
                 <span style={{ fontWeight: "bold" }}>
                   India, Russia, and China
